@@ -1,0 +1,98 @@
+.recipe-card {
+  background: var(--warm-surface);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  border: 1px solid var(--warm-border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.recipe-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--warm-border-strong);
+  box-shadow: 0 8px 16px rgba(61, 45, 31, 0.12);
+}
+
+.recipe-card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.recipe-card-content {
+  padding: var(--space-md);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe-card-title {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+}
+
+.recipe-card-meta {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  flex-grow: 1;
+  align-items: flex-start;
+}
+
+.recipe-card-meta-item {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.recipe-card-meta-label {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.recipe-card-meta-value {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.recipe-card-button {
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--warm-surface);
+  color: var(--terracotta);
+  border: 1px solid var(--warm-border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all var(--transition-quick);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: auto;
+}
+
+.recipe-card-button:hover {
+  background-color: var(--terracotta);
+  color: var(--warm-surface);
+  border-color: var(--terracotta);
+}
+
+.recipe-card-button:active {
+  background-color: var(--burnt-sienna);
+  border-color: var(--burnt-sienna);
+}

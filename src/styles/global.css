@@ -1,0 +1,173 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Warm, tactile recipe companion design system */
+
+:root {
+  /* Color Palette - from the kitchen & cooking world */
+  /* Warm surfaces & interaction colors */
+  --terracotta: #D9704C;
+  --earth-dark: #3D2D1F;
+  --herb-green: #6BA876;
+  --cream-linen: #F5F0E8;
+  --burnt-sienna: #A54226;
+  
+  /* Warm neutrals for structure (never cool grays) */
+  --warm-bg-primary: #FAF8F5;
+  --warm-bg-secondary: #F3EEE8;
+  --warm-surface: #FFFFFF;
+  --warm-border: rgba(139, 115, 85, 0.15);
+  --warm-border-strong: rgba(139, 115, 85, 0.25);
+  
+  /* Text hierarchy - warm dark tones */
+  --text-primary: #2B1F14;
+  --text-secondary: #5D4A3A;
+  --text-tertiary: #8B7355;
+  --text-muted: #A89680;
+  
+  /* Semantic colors */
+  --success: #6BA876;
+  --warning: #D9704C;
+  --error: #C55A42;
+  
+  /* Spacing system - breathing room */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  
+  /* Border radius - soft, not mechanical */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  
+  /* Typography - serif for warmth, sans for clarity */
+  --font-serif: 'Georgia', 'Garamond', serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  
+  /* Transitions - smooth, not jarring */
+  --transition-quick: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--warm-bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Typography hierarchy - weight & character matter */
+h1 {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+h2 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+}
+
+h3 {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text-primary);
+}
+
+p {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+small, .text-small {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+/* State messages */
+.loading,
+.error-message,
+.no-results {
+  text-align: center;
+  padding: var(--space-2xl) var(--space-lg);
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+.error-message {
+  color: var(--error);
+  background-color: rgba(197, 90, 66, 0.08);
+  border: 1px solid rgba(197, 90, 66, 0.2);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+.no-results {
+  color: var(--text-tertiary);
+  padding: var(--space-2xl);
+}
+
+/* Navigation & Layout */
+.back-button {
+  background-color: var(--warm-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--warm-border-strong);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: var(--space-md);
+  transition: all var(--transition-quick);
+}
+
+.back-button:hover {
+  background-color: var(--warm-bg-secondary);
+  border-color: var(--terracotta);
+  color: var(--terracotta);
+  transform: translateX(-3px);
+}
+
+.back-button:active {
+  background-color: rgba(217, 112, 76, 0.1);
+}
+
+/* Page header - warm introduction, not gradient assault */
+.page-header {
+  background-color: var(--warm-surface);
+  border-bottom: 2px solid var(--terracotta);
+  padding: var(--space-2xl) var(--space-lg);
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+}
+
+.page-header h1 {
+  font-size: 36px;
+  font-family: var(--font-serif);
+  color: var(--earth-dark);
+  margin-bottom: var(--space-sm);
+}
+
+.page-header p {
+  font-size: 16px;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
