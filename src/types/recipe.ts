@@ -28,3 +28,19 @@ export interface SeafoodMeal {
 export interface SeafoodListResponse {
   meals: SeafoodMeal[] | null;
 }
+
+export interface CuisineItem {
+  strArea: string;
+}
+
+export interface CuisineListResponse {
+  meals: CuisineItem[] | null;
+}
+
+export interface CategoryItem {
+  strCategory: string;
+}
+
+export interface CategoryListResponse {
+  meals: CategoryItem[] | null;
+}

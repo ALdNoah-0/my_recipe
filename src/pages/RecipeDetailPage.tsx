@@ -44,6 +44,10 @@ const RecipeDetailPage: React.FC = () => {
   }
 
   const ingredients = getIngredients();
+  const tags = (meal.strTags || '')
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
 
   // Clean and parse instructions into steps
   const parseInstructions = (text: string) => {
@@ -99,24 +103,25 @@ const RecipeDetailPage: React.FC = () => {
 
         <div className="recipe-detail-info">
           <h1>{meal.strMeal}</h1>
+          <p className="recipe-subtitle">{ingredients.length} ingredients</p>
 
           <div className="recipe-meta">
             {meal.strCategory && (
               <div className="meta-item">
                 <strong>Category</strong>
-                {meal.strCategory}
+                <span className="meta-value">{meal.strCategory}</span>
               </div>
             )}
             {meal.strArea && (
               <div className="meta-item">
                 <strong>Cuisine</strong>
-                {meal.strArea}
+                <span className="meta-value">{meal.strArea}</span>
               </div>
             )}
-            {meal.strTags && (
+            {tags.length > 0 && (
               <div className="meta-item">
                 <strong>Tags</strong>
-                {meal.strTags}
+                <span className="meta-value">{tags.join(', ')}</span>
               </div>
             )}
           </div>

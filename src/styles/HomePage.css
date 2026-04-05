@@ -1,7 +1,88 @@
 .home-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--space-lg);
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.recipe-app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  background: #ffffff;
+  border: 1px solid rgba(139, 115, 85, 0.16);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin-bottom: var(--space-lg);
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #d9704c 0%, #b95636 100%);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(169, 84, 52, 0.3);
+}
+
+.app-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.app-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.app-subtitle {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.header-category {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.header-category-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+}
+
+.header-category-select {
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(139, 115, 85, 0.26);
+  background-color: #fffaf4;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 10px;
+  outline: none;
+}
+
+.header-category-select:focus {
+  border-color: rgba(217, 112, 76, 0.7);
+  box-shadow: 0 0 0 3px rgba(217, 112, 76, 0.15);
 }
 
 .recipe-grid {
@@ -9,6 +90,7 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-lg);
   margin-bottom: var(--space-2xl);
+  align-items: stretch;
 }
 
 /* Breathing room for different densities */
@@ -28,9 +110,24 @@
 }
 
 @media (max-width: 768px) {
+  .recipe-app-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 12px;
+  }
+
+  .header-category {
+    min-width: 0;
+    width: 100%;
+  }
+
   .recipe-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: var(--space-md);
+  }
+
+  .home-page {
+    padding: var(--space-lg) var(--space-md);
   }
 }
 
