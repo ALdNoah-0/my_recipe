@@ -1,96 +1,81 @@
-import React, { useState, useMemo } from 'react';
-import {
-  useGetSeafoodMealsQuery,
-  useGetCategoriesQuery,
-  useGetMealsByCategoryQuery,
-  useSearchMealByNameQuery,
-} from '../redux/mealApi';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useGetMealsByCuisineQuery, useGetCategoriesQuery } from '../redux/mealApi';
 import RecipeCard from '../components/RecipeCard';
-import SearchBar from '../components/SearchBar';
-import Pagination from '../components/Pagination';
-import '../styles/HomePage.css';
+import CategoryCard from '../components/CategoryCard';
+import '../styles/MainPages.css';
 
-const HomePage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
+const CUISINES = ['Japanese', 'Chinese', 'French', 'Italian', 'American', 'British'];
 
-  const { data: seafoodData, isLoading: isLoadingSeafood, error: seafoodError } = useGetSeafoodMealsQuery();
-  const { data: categoriesData } = useGetCategoriesQuery();
-  const { data: categoryMealsData, isLoading: isLoadingCategoryMeals } = useGetMealsByCategoryQuery(selectedCategory, {
-    skip: selectedCategory === 'All' || Boolean(searchQuery),
-  });
-  const { data: searchData, isLoading: isLoadingSearch } = useSearchMealByNameQuery(searchQuery, {
-    skip: !searchQuery,
-  });
+const FOOD_CATEGORIES = [
+  { name: 'Beef', image: 'https://www.themealdb.com/images/category/beef.png' },
+  { name: 'Chicken', image: 'https://www.themealdb.com/images/category/chicken.png' },
+  { name: 'Pork', image: 'https://www.themealdb.com/images/category/pork.png' },
+  { name: 'Lamb', image: 'https://www.themealdb.com/images/category/lamb.png' },
+  { name: 'Seafood', image: 'https://www.themealdb.com/images/category/seafood.png' },
+  { name: 'Pasta', image: 'https://www.themealdb.com/images/category/pasta.png' },
+  { name: 'Dessert', image: 'https://www.themealdb.com/images/category/dessert.png' },
+];
 
-  const isLoading = isLoadingSeafood || isLoadingSearch || isLoadingCategoryMeals;
-  const error = seafoodError;
+interface CuisineSectionProps {
+  cuisine: string;
+}
 
-  const meals = useMemo(() => {
-    if (searchQuery && searchData?.meals) {
-      return searchData.meals;
-    }
+const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
+  const navigate = useNavigate();
+  const { data, isLoading } = useGetMealsByCuisineQuery(cuisine);
+  const meals = data?.meals?.slice(0, 6) || [];
 
-    if (selectedCategory !== 'All') {
-      return categoryMealsData?.meals || [];
-    }
-
-    return seafoodData?.meals || [];
-  }, [searchQuery, searchData, seafoodData, selectedCategory, categoryMealsData]);
-
-  const getMealCategory = (meal: unknown) => {
-    if (meal && typeof meal === 'object' && 'strCategory' in meal) {
-      const category = (meal as { strCategory?: unknown }).strCategory;
-      if (typeof category === 'string' && category.trim()) {
-        return category;
-      }
-    }
-    if (selectedCategory !== 'All') {
-      return selectedCategory;
-    }
-    return 'Seafood';
+  const handleViewAll = () => {
+    navigate(`/recipe?cuisine=${encodeURIComponent(cuisine)}`);
   };
-
-  const categoryOptions = useMemo(() => {
-    const apiCategories = categoriesData?.meals?.map((item) => item.strCategory).filter(Boolean) || [];
-    return ['All', ...apiCategories];
-  }, [categoriesData]);
-
-  const filteredMeals = useMemo(() => {
-    if (searchQuery.trim() === '' || selectedCategory === 'All') {
-      return meals;
-    }
-    return meals.filter((meal) => getMealCategory(meal) === selectedCategory);
-  }, [meals, selectedCategory, searchQuery]);
-
-  const totalItems = filteredMeals.length;
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentMeals = filteredMeals.slice(startIndex, endIndex);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1);
-  };
-
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(event.target.value);
-    setCurrentPage(1);
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo(0, 0);
-  };
-
-  if (error) {
-    return <div className="error-message">Error loading recipes. Please try again later.</div>;
-  }
 
   return (
-    <div className="home-page">
+    <section className="cuisine-section">
+      <div className="cuisine-section-header">
+        <h2 className="cuisine-section-title">{cuisine} Cuisine</h2>
+        <button className="view-all-button" onClick={handleViewAll}>
+          View All <span className="view-all-arrow">▶</span>
+        </button>
+      </div>
+      <div className="cuisine-recipes-scroll">
+        {isLoading ? (
+          <div className="cuisine-loading">Loading {cuisine} recipes...</div>
+        ) : meals.length > 0 ? (
+          meals.map((meal) => (
+            <RecipeCard
+              key={meal.idMeal}
+              id={meal.idMeal}
+              name={meal.strMeal}
+              image={meal.strMealThumb}
+              category={cuisine}
+            />
+          ))
+        ) : (
+          <div className="no-recipes">No recipes found</div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+const HomePage: React.FC = () => {
+  const navigate = useNavigate();
+  const { data: categoriesData } = useGetCategoriesQuery();
+
+  const categoryOptions = ['All', ...(categoriesData?.meals?.map((item) => item.strCategory).filter(Boolean) || [])];
+
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const category = event.target.value;
+    if (category !== 'All') {
+      navigate(`/recipe?category=${encodeURIComponent(category)}`);
+    } else {
+      navigate('/recipe');
+    }
+  };
+
+  return (
+    <div className="main-page">
       <div className="recipe-app-header">
         <div className="app-brand">
           <div className="app-logo" aria-hidden="true">
@@ -98,7 +83,7 @@ const HomePage: React.FC = () => {
           </div>
           <div className="app-brand-text">
             <span className="app-title">Recipe App</span>
-            <span className="app-subtitle">Fresh meals every day</span>
+            <span className="app-subtitle">Learn to cook in our kitchen!</span>
           </div>
         </div>
 
@@ -106,7 +91,7 @@ const HomePage: React.FC = () => {
           <span className="header-category-label">Category</span>
           <select
             className="header-category-select"
-            value={selectedCategory}
+            defaultValue="All"
             onChange={handleCategoryChange}
             aria-label="Recipe category"
           >
@@ -121,39 +106,30 @@ const HomePage: React.FC = () => {
 
       <header className="page-header">
         <h1>Recipe Explorer</h1>
-        <p>Discover delicious seafood recipes</p>
+        <p>Discover delicious recipes from around the world</p>
       </header>
 
-      <SearchBar onSearch={handleSearch} placeholder="Search recipes by name..." />
-
-      {isLoading && <div className="loading">Loading recipes...</div>}
-
-      {!isLoading && currentMeals.length === 0 && (
-        <div className="no-results">
-          {searchQuery ? 'No recipes found matching your search.' : 'No recipes available.'}
-        </div>
-      )}
-
-      <div className="recipe-grid">
-        {currentMeals.map((meal) => (
-          <RecipeCard 
-            key={meal.idMeal} 
-            id={meal.idMeal} 
-            name={meal.strMeal} 
-            image={meal.strMealThumb}
-            category={getMealCategory(meal)}
-          />
+      {/* Cuisines Sections */}
+      <h1 className="cuisines-title">Cuisines</h1>
+      <div className="cuisines-container">
+        {CUISINES.map((cuisine) => (
+          <CuisineSection key={cuisine} cuisine={cuisine} />
         ))}
       </div>
 
-      {!isLoading && filteredMeals.length > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          totalItems={totalItems}
-          itemsPerPage={itemsPerPage}
-          onPageChange={handlePageChange}
-        />
-      )}
+      {/* Food Categories Section */}
+      <section className="categories-section">
+        <h2 className="categories-section-title">Food Categories</h2>
+        <div className="categories-grid">
+          {FOOD_CATEGORIES.map((category) => (
+            <CategoryCard
+              key={category.name}
+              name={category.name}
+              image={category.image}
+            />
+          ))}
+        </div>
+      </section>
     </div>
   );
 };
