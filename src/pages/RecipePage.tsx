@@ -12,7 +12,6 @@ import RecipeCard from '../components/RecipeCard';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
 import '../styles/MainPages.css';
-import HomePage from './HomePage';
 
 const RecipePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -161,7 +160,7 @@ const RecipePage: React.FC = () => {
 
         <div className="header-filters">
           <label className="header-category">
-            <button className="header-category-label header-category-select" aria-label="Back" onClick={handleReturnToHome}>
+            <button className="header-category-select" aria-label="Back" onClick={handleReturnToHome}>
               Back
             </button>
           </label>

@@ -62,6 +62,7 @@ const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { data: categoriesData } = useGetCategoriesQuery();
+  const marqueeCategories = [...FOOD_CATEGORIES, ...FOOD_CATEGORIES];
 
   const categoryOptions = ['All', ...(categoriesData?.meals?.map((item) => item.strCategory).filter(Boolean) || [])];
 
@@ -120,14 +121,17 @@ const HomePage: React.FC = () => {
       {/* Food Categories Section */}
       <section className="categories-section">
         <h2 className="categories-section-title">Food Categories</h2>
-        <div className="categories-grid">
-          {FOOD_CATEGORIES.map((category) => (
-            <CategoryCard
-              key={category.name}
-              name={category.name}
-              image={category.image}
-            />
-          ))}
+        <div className="categories-marquee" role="region" aria-label="Scrolling food categories">
+          <div className="categories-track">
+            {marqueeCategories.map((category, index) => (
+              <div className="categories-track-item" key={`${category.name}-${index}`}>
+                <CategoryCard
+                  name={category.name}
+                  image={category.image}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </div>

@@ -15,12 +15,26 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ name, image }) => {
     navigate(`/recipe?category=${encodeURIComponent(name)}`);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
-    <div className="category-card" onClick={handleClick}>
+    <div
+      className="category-card"
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`Open ${name} recipes`}
+    >
       <div className="category-card-image-container">
         <img src={image} alt={name} className="category-card-image" />
       </div>
-      <h2 className="category-card-name">{name}</h2>
+      <h3 className="category-card-name">{name}</h3>
     </div>
   );
 };
