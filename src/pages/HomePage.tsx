@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HeartIcon, ArrowRightIcon } from '@phosphor-icons/react';
+import { HeartIcon, ArrowRightIcon, ArrowLeftIcon } from '@phosphor-icons/react';
 import { useGetMealsByCuisineQuery, useGetCategoriesQuery, useGetRandomMealQuery } from '../redux/mealApi';
 import RecipeCard from '../components/RecipeCard';
 import CategoryCard from '../components/CategoryCard';
@@ -27,6 +27,38 @@ const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
   const navigate = useNavigate();
   const { data, isLoading } = useGetMealsByCuisineQuery(cuisine);
   const meals = data?.meals?.slice(0, 6) || [];
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
+
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setShowLeftArrow(scrollLeft > 0);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const container = scrollContainerRef.current;
+    container?.addEventListener('scroll', checkScroll);
+    window.addEventListener('resize', checkScroll);
+    return () => {
+      container?.removeEventListener('scroll', checkScroll);
+      window.removeEventListener('resize', checkScroll);
+    };
+  }, [meals]);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 300;
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   const handleViewAll = () => {
     navigate(`/recipe?cuisine=${encodeURIComponent(cuisine)}`);
@@ -40,7 +72,17 @@ const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
           View All <ArrowRightIcon size={18} weight="bold" style={{ display: 'inline', marginLeft: '6px', verticalAlign: 'text-bottom' }} />
         </button>
       </div>
-      <div className="cuisine-recipes-scroll">
+      <div className="cuisine-scroll-wrapper">
+        {showLeftArrow && (
+          <button
+            className="cuisine-scroll-arrow cuisine-scroll-arrow-left"
+            onClick={() => scroll('left')}
+            aria-label="Scroll left"
+          >
+            <ArrowLeftIcon size={20} weight="bold" />
+          </button>
+        )}
+        <div className="cuisine-recipes-scroll" ref={scrollContainerRef}>
         {isLoading ? (
           <div className="cuisine-loading">Loading {cuisine} recipes...</div>
         ) : meals.length > 0 ? (
@@ -55,6 +97,16 @@ const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
           ))
         ) : (
           <div className="no-recipes">No recipes found</div>
+        )}
+        </div>
+        {showRightArrow && (
+          <button
+            className="cuisine-scroll-arrow cuisine-scroll-arrow-right"
+            onClick={() => scroll('right')}
+            aria-label="Scroll right"
+          >
+            <ArrowRightIcon size={20} weight="bold" />
+          </button>
         )}
       </div>
     </section>
