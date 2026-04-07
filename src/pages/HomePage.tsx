@@ -76,8 +76,12 @@ const HomePage: React.FC = () => {
     }
   };
 
+  const handleGoToIngredientPlanner = () => {
+    navigate('/ingredient-planner');
+  };
+
   /* Recipe of the day random recipe fetching */
-  const { data: randomData, isLoading: isRandomLoading } = useGetRandomMealQuery();
+  const { data: randomData } = useGetRandomMealQuery();
   const randomMeal = randomData?.meals?.[0];
 
   // Get today's date key
@@ -119,21 +123,27 @@ const HomePage: React.FC = () => {
           </div>
         </div>
 
-        <label className="header-category">
-          <span className="header-category-label">Category</span>
-          <select
-            className="header-category-select"
-            defaultValue="All"
-            onChange={handleCategoryChange}
-            aria-label="Recipe category"
-          >
-            {categoryOptions.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div className="header-filters">
+          <button className="header-nav-button" onClick={handleGoToIngredientPlanner}>
+            Ingredient Planner
+          </button>
+
+          <label className="header-category">
+            <span className="header-category-label">Category</span>
+            <select
+              className="header-category-select"
+              defaultValue="All"
+              onChange={handleCategoryChange}
+              aria-label="Recipe category"
+            >
+              {categoryOptions.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
       </div>
 
       <header className="page-header">
