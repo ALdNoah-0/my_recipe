@@ -1,6 +1,10 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGetIngredientsQuery, useLazyGetMealsByIngredientQuery } from '../redux/mealApi';
+import {
+  useGetIngredientsQuery,
+  useLazyGetMealsByIngredientQuery,
+  useGetMealDetailsQuery,
+} from '../redux/mealApi';
 import RecipeCard from '../components/RecipeCard';
 import '../styles/IngredientPlannerPage.css';
 import type { SeafoodMeal } from '../types/recipe';
@@ -8,6 +12,30 @@ import type { SeafoodMeal } from '../types/recipe';
 type RankedMeal = SeafoodMeal & {
   matchedCount: number;
   matchedIngredients: string[];
+};
+
+interface MatchedRecipeCardProps {
+  meal: RankedMeal;
+  totalSelectedIngredients: number;
+}
+
+const MatchedRecipeCard: React.FC<MatchedRecipeCardProps> = ({ meal, totalSelectedIngredients }) => {
+  const { data: mealDetailsData } = useGetMealDetailsQuery(meal.idMeal);
+  const mealCategory = mealDetailsData?.meals?.[0]?.strCategory?.trim() || 'Recipe';
+
+  return (
+    <div className="planner-recipe-card-wrap">
+      <div className="match-badge">
+        {meal.matchedCount}/{totalSelectedIngredients} ingredients
+      </div>
+      <RecipeCard
+        id={meal.idMeal}
+        name={meal.strMeal}
+        image={meal.strMealThumb}
+        category={mealCategory}
+      />
+    </div>
+  );
 };
 
 const DEFAULT_SUGGESTED_INGREDIENTS = [
@@ -271,17 +299,11 @@ const IngredientPlannerPage: React.FC = () => {
 
           <div className="planner-recipe-grid">
             {topMeals.map((meal) => (
-              <div key={meal.idMeal} className="planner-recipe-card-wrap">
-                <div className="match-badge">
-                  {meal.matchedCount}/{selectedIngredients.length} ingredients
-                </div>
-                <RecipeCard
-                  id={meal.idMeal}
-                  name={meal.strMeal}
-                  image={meal.strMealThumb}
-                  category="Ingredient Match"
-                />
-              </div>
+              <MatchedRecipeCard
+                key={meal.idMeal}
+                meal={meal}
+                totalSelectedIngredients={selectedIngredients.length}
+              />
             ))}
           </div>
         </section>
