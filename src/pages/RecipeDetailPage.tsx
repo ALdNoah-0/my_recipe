@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeftIcon, ArrowRightIcon } from '@phosphor-icons/react';
 import { useGetMealDetailsQuery } from '../redux/mealApi';
 import '../styles/RecipeDetailPage.css';
 
@@ -36,7 +37,8 @@ const RecipeDetailPage: React.FC = () => {
         <div className="error-message">
           <p>Recipe not found. Please go back and try again.</p>
           <button onClick={() => navigate('/')} className="back-button">
-            ← Back to Recipes
+            <ArrowLeftIcon size={18} weight="bold" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+            Back to Recipes
           </button>
         </div>
       </div>
@@ -93,7 +95,8 @@ const RecipeDetailPage: React.FC = () => {
   return (
     <div className="recipe-detail-page">
       <button onClick={() => navigate('/')} className="back-button">
-        ← Back to Recipes
+        <ArrowLeftIcon size={18} weight="bold" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+        Back to Recipes
       </button>
 
       <div className="recipe-detail-container">
@@ -154,7 +157,8 @@ const RecipeDetailPage: React.FC = () => {
             <div className="recipe-section">
               <h2>Video Tutorial</h2>
               <a href={meal.strYoutube} target="_blank" rel="noopener noreferrer" className="video-link">
-                Watch on YouTube →
+                Watch on YouTube
+                <ArrowRightIcon size={18} weight="bold" style={{ marginLeft: '6px', verticalAlign: 'text-bottom' }} />
               </a>
             </div>
           )}

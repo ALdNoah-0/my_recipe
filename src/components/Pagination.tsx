@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowLeftIcon, ArrowRightIcon } from '@phosphor-icons/react';
 import '../styles/Pagination.css';
 
 interface PaginationProps {
@@ -51,8 +52,10 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={handlePrevious}
         disabled={currentPage === 1}
         className="pagination-button"
+        title="Previous page"
       >
-        ← Previous
+        <ArrowLeftIcon size={18} weight="bold" style={{ marginRight: '4px', verticalAlign: 'text-bottom' }} />
+        Previous
       </button>
 
       {startPage > 1 && (
@@ -87,8 +90,10 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={handleNext}
         disabled={currentPage === totalPages}
         className="pagination-button"
+        title="Next page"
       >
-        Next →
+        Next
+        <ArrowRightIcon size={18} weight="bold" style={{ marginLeft: '4px', verticalAlign: 'text-bottom' }} />
       </button>
 
       <span className="pagination-info">

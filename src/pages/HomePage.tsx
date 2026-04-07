@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { HeartIcon, ArrowRightIcon } from '@phosphor-icons/react';
 import { useGetMealsByCuisineQuery, useGetCategoriesQuery, useGetRandomMealQuery } from '../redux/mealApi';
 import RecipeCard from '../components/RecipeCard';
 import CategoryCard from '../components/CategoryCard';
@@ -36,7 +37,7 @@ const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
       <div className="cuisine-section-header">
         <h2 className="cuisine-section-title">{cuisine} Cuisine</h2>
         <button className="view-all-button" onClick={handleViewAll}>
-          View All <span className="view-all-arrow">▶</span>
+          View All <ArrowRightIcon size={18} weight="bold" style={{ display: 'inline', marginLeft: '6px', verticalAlign: 'text-bottom' }} />
         </button>
       </div>
       <div className="cuisine-recipes-scroll">
@@ -77,7 +78,7 @@ const HomePage: React.FC = () => {
   };
 
   /* Recipe of the day random recipe fetching */
-  const { data: randomData, isLoading: isRandomLoading } = useGetRandomMealQuery();
+  const { data: randomData } = useGetRandomMealQuery();
   const randomMeal = randomData?.meals?.[0];
 
   // Get today's date key
@@ -143,7 +144,10 @@ const HomePage: React.FC = () => {
       
       {/* Recipe of the Day */}
       <section className="recipe-of-day">
-        <h2 className="recipe-of-day-title">🍽 Recipe of the Day</h2>
+        <h2 className="recipe-of-day-title">
+          <HeartIcon size={28} weight="bold" style={{ display: 'inline', marginRight: '8px', verticalAlign: 'text-bottom' }} />
+          Recipe of the Day
+        </h2>
         <div className="recipe-of-day-container">
           {!randomMeal ? (
             <div>Loading recipe of the day...</div>
@@ -162,7 +166,9 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Cuisines Sections */}
-      <h1 className="cuisines-title">Cuisines</h1>
+      <h1 className="cuisines-title">
+        Cuisines
+      </h1>
       <div className="cuisines-container">
         {CUISINES.map((cuisine) => (
           <CuisineSection key={cuisine} cuisine={cuisine} />
