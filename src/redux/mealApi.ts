@@ -4,6 +4,7 @@ import type {
   MealDetailsResponse,
   CuisineListResponse,
   CategoryListResponse,
+  IngredientListResponse,
 } from '../types/recipe';
 
 export const mealApi = createApi({
@@ -27,6 +28,12 @@ export const mealApi = createApi({
     getMealsByCategory: builder.query<SeafoodListResponse, string>({
       query: (category) => `filter.php?c=${encodeURIComponent(category)}`,
     }),
+    getIngredients: builder.query<IngredientListResponse, void>({
+      query: () => 'list.php?i=list',
+    }),
+    getMealsByIngredient: builder.query<SeafoodListResponse, string>({
+      query: (ingredient) => `filter.php?i=${encodeURIComponent(ingredient)}`,
+    }),
     getMealDetails: builder.query<MealDetailsResponse, string>({
       query: (mealId) => `lookup.php?i=${mealId}`,
     }),
@@ -45,6 +52,8 @@ export const {
   useGetMealsByCuisineQuery,
   useGetCategoriesQuery,
   useGetMealsByCategoryQuery,
+  useGetIngredientsQuery,
+  useLazyGetMealsByIngredientQuery,
   useGetMealDetailsQuery,
   useSearchMealByNameQuery,
   useGetRandomMealQuery,

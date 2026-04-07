@@ -44,3 +44,14 @@ export interface CategoryItem {
 export interface CategoryListResponse {
   meals: CategoryItem[] | null;
 }
+
+export interface IngredientItem {
+  idIngredient: string;
+  strIngredient: string;
+  strDescription: string | null;
+  strType: string | null;
+}
+
+export interface IngredientListResponse {
+  meals: IngredientItem[] | null;
+}

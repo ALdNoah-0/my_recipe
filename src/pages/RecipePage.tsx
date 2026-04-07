@@ -138,6 +138,11 @@ const RecipePage: React.FC = () => {
   };
 
   const handleReturnToHome = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
     navigate('/');
   };
 
@@ -160,7 +165,7 @@ const RecipePage: React.FC = () => {
 
         <div className="header-filters">
           <label className="header-category">
-            <button className="header-category-select" aria-label="Back" onClick={handleReturnToHome}>
+            <button className="header-category-select planner-nav-button" aria-label="Back" onClick={handleReturnToHome}>
               Back
             </button>
           </label>
