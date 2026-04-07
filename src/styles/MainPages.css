@@ -105,6 +105,17 @@
   animation: fadeInUp 0.4s ease-out;
 }
 
+
+/* Featured Recipe Card Styles */
+.recipe-of-day-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: left;
+  margin-bottom: var(--space-xl);
+}
+
+
 /* Cuisines Section Styles */
 .cuisines-container {
   display: flex;

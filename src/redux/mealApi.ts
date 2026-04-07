@@ -30,6 +30,9 @@ export const mealApi = createApi({
     getMealDetails: builder.query<MealDetailsResponse, string>({
       query: (mealId) => `lookup.php?i=${mealId}`,
     }),
+    getRandomMeal: builder.query<MealDetailsResponse, void>({
+      query: () => 'random.php',
+    }),
     searchMealByName: builder.query<SeafoodListResponse, string>({
       query: (mealName) => `search.php?s=${mealName}`,
     }),
@@ -44,4 +47,5 @@ export const {
   useGetMealsByCategoryQuery,
   useGetMealDetailsQuery,
   useSearchMealByNameQuery,
+  useGetRandomMealQuery,
 } = mealApi;

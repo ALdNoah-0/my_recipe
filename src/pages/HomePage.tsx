@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGetMealsByCuisineQuery, useGetCategoriesQuery } from '../redux/mealApi';
+import { useGetMealsByCuisineQuery, useGetCategoriesQuery, useGetRandomMealQuery } from '../redux/mealApi';
 import RecipeCard from '../components/RecipeCard';
 import CategoryCard from '../components/CategoryCard';
+import FeaturedRecipeCard from '../components/FeaturedRecipeCard';
 import '../styles/MainPages.css';
 
 const CUISINES = ['Japanese', 'Chinese', 'French', 'Italian', 'American', 'British'];
@@ -75,6 +76,36 @@ const HomePage: React.FC = () => {
     }
   };
 
+  /* Recipe of the day random recipe fetching */
+  const { data: randomData, isLoading: isRandomLoading } = useGetRandomMealQuery();
+  const randomMeal = randomData?.meals?.[0];
+
+  // Get today's date key
+  const todayKey = new Date().toISOString().split('T')[0]; // e.g. "2026-04-07"
+  const storedMeal = localStorage.getItem(`recipeOfTheDay-${todayKey}`);
+
+  let recipeOfTheDay = storedMeal ? JSON.parse(storedMeal) : null;
+
+  // Only save a random meal if we don’t already have one for today
+  if (!recipeOfTheDay && randomData?.meals?.length) {
+    recipeOfTheDay = randomData.meals[0]; // pick the first random meal
+    localStorage.setItem(`recipeOfTheDay-${todayKey}`, JSON.stringify(recipeOfTheDay));
+  }
+
+  // Extract number of ingredients
+  const ingredients: { strIngredient: string; strMeasure: string }[] =
+    recipeOfTheDay
+      ? Array.from({ length: 20 }, (_, i) => ({
+          strIngredient: recipeOfTheDay[`strIngredient${i + 1}` as keyof typeof recipeOfTheDay] || '',
+          strMeasure: recipeOfTheDay[`strMeasure${i + 1}` as keyof typeof recipeOfTheDay] || '',
+        })).filter(item => item.strIngredient.trim() !== '')
+      : [];
+
+  const numIngredients = ingredients.length;
+
+  // Extract tags
+  const tags = recipeOfTheDay?.strTags ? recipeOfTheDay.strTags.split(',') : [];
+
   return (
     <div className="main-page">
       <div className="recipe-app-header">
@@ -109,6 +140,26 @@ const HomePage: React.FC = () => {
         <h1>Recipe Explorer</h1>
         <p>Discover delicious recipes from around the world</p>
       </header>
+      
+      {/* Recipe of the Day */}
+      <section className="recipe-of-day">
+        <h2 className="recipe-of-day-title">🍽 Recipe of the Day</h2>
+        <div className="recipe-of-day-container">
+          {!randomMeal ? (
+            <div>Loading recipe of the day...</div>
+          ) : (
+            <FeaturedRecipeCard
+              id={recipeOfTheDay?.idMeal || ''}
+              name={recipeOfTheDay?.strMeal || ''}
+              image={recipeOfTheDay?.strMealThumb || ''}
+              category={recipeOfTheDay?.strCategory}
+              cuisine={recipeOfTheDay?.strArea}
+              ingredients={numIngredients}
+              tags={tags}
+            />
+          )}
+        </div>
+      </section>
 
       {/* Cuisines Sections */}
       <h1 className="cuisines-title">Cuisines</h1>

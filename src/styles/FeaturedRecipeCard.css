@@ -1,0 +1,106 @@
+.featured-recipe-card {
+  display: flex;
+  flex-direction: row; /* image left, content right */
+  background: var(--warm-surface);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+}
+
+.featured-recipe-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.featured-recipe-image {
+  width: 320px;
+  height: 320px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 24px 0 0 24px;
+  flex-shrink: 0;
+}
+
+.featured-recipe-content {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
+  flex: 1;
+}
+
+.featured-recipe-content h3 {
+  font-family: var(--font-sans);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.recipe-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-bottom: 0px !important; 
+}
+
+.ingredients-count {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  margin-bottom: var(--space-md);
+}
+
+.meta-item {
+  padding: 6px 12px;
+  background-color: rgba(217, 112, 76, 0.08);
+  border: 1px solid rgba(217, 112, 76, 0.25);
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--burnt-sienna);
+}
+
+.featured-recipe-ingredients {
+  margin-top: var(--space-md);
+}
+
+.featured-recipe-ingredients h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.featured-recipe-ingredients ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+}
+
+.featured-recipe-ingredients li {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.featured-recipe-card-button {
+  padding: 20px var(--space-md);
+  background-color: rgba(217, 112, 76, 0.08);
+  color: var(--burnt-sienna);
+  border: 1px solid rgba(217, 112, 76, 0.25);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all var(--transition-quick);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-top: auto;
+}
