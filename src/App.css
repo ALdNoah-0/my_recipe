@@ -3,5 +3,14 @@
   background:
     radial-gradient(circle at top right, rgba(217, 112, 76, 0.08), transparent 40%),
     radial-gradient(circle at bottom left, rgba(107, 168, 118, 0.08), transparent 42%),
-    var(--warm-bg-primary);
+    var(--warm-bg-primary, #f7f1e8);
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding-top: 5.8rem;
+}
+
+.app-shell--home {
+  padding-top: 0;
 }

@@ -1,14 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, ArrowRight, ArrowLeft } from '@phosphor-icons/react';
-import { useGetMealsByCuisineQuery, useGetCategoriesQuery, useGetRandomMealQuery } from '../redux/mealApi';
+import { useGetMealsByCuisineQuery, useGetRandomMealQuery } from '../redux/mealApi';
 import RecipeCard from '../components/RecipeCard';
-import Header from '../components/Header';
 import CategoryCard from '../components/CategoryCard';
 import FeaturedRecipeCard from '../components/FeaturedRecipeCard';
 import '../styles/MainPages.css';
 
-const CUISINES = ['Japanese', 'Chinese', 'French', 'Italian', 'American', 'British'];
+const CUISINES = ['Japanese', 'Filipino', 'Chinese', 'French', 'Italian', 'American', 'British'];
 
 const FOOD_CATEGORIES = [
   { name: 'Beef', image: 'https://www.themealdb.com/images/category/beef.png' },
@@ -27,7 +26,7 @@ interface CuisineSectionProps {
 const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
   const navigate = useNavigate();
   const { data, isLoading } = useGetMealsByCuisineQuery(cuisine);
-  const meals = data?.meals?.slice(0, 6) || [];
+  const meals = useMemo(() => data?.meals?.slice(0, 6) || [], [data]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
@@ -70,7 +69,7 @@ const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
       <div className="cuisine-section-header">
         <h2 className="cuisine-section-title">{cuisine} Cuisine</h2>
         <button className="view-all-button" onClick={handleViewAll}>
-          View All <ArrowRight size={18} weight="bold" style={{ display: 'inline', marginLeft: '6px', verticalAlign: 'text-bottom' }} />
+          View All <ArrowRight size={18} weight="bold" className="button-icon" />
         </button>
       </div>
       <div className="cuisine-scroll-wrapper">
@@ -115,23 +114,21 @@ const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
 };
 
 const HomePage: React.FC = () => {
-  const navigate = useNavigate();
-  const { data: categoriesData } = useGetCategoriesQuery();
   const marqueeCategories = [...FOOD_CATEGORIES, ...FOOD_CATEGORIES];
+  const recipeOfDayRef = useRef<HTMLElement | null>(null);
 
-  const categoryOptions = ['All', ...(categoriesData?.meals?.map((item) => item.strCategory).filter(Boolean) || [])];
-
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const category = event.target.value;
-    if (category !== 'All') {
-      navigate(`/recipe?category=${encodeURIComponent(category)}`);
-    } else {
-      navigate('/recipe');
+  const scrollToRecipeOfDay = () => {
+    if (!recipeOfDayRef.current) {
+      return;
     }
-  };
 
-  const handleGoToIngredientPlanner = () => {
-    navigate('/ingredient-planner');
+    const headerOffset = 96;
+    const targetTop = recipeOfDayRef.current.getBoundingClientRect().top + window.scrollY - headerOffset;
+
+    window.scrollTo({
+      top: Math.max(targetTop, 0),
+      behavior: 'smooth',
+    });
   };
 
   /* Recipe of the day random recipe fetching */
@@ -165,63 +162,62 @@ const HomePage: React.FC = () => {
   const tags = recipeOfTheDay?.strTags ? recipeOfTheDay.strTags.split(',') : [];
 
   return (
-    <div className="main-page">
-      <Header
-        categoryOptions={categoryOptions}
-        onPrimaryAction={handleGoToIngredientPlanner}
-        primaryActionLabel="Ingredient Planner"
-        onCategoryChange={handleCategoryChange}
-      />
-      
-      {/* Recipe of the Day */}
-      <section className="recipe-of-day">
-        <h2 className="recipe-of-day-title">
-          <Heart size={28} weight="bold" style={{ display: 'inline', marginRight: '8px', verticalAlign: 'text-bottom' }} />
-          Recipe of the Day
-        </h2>
-        <div className="recipe-of-day-container">
-          {!randomMeal ? (
-            <div>Loading recipe of the day...</div>
-          ) : (
-            <FeaturedRecipeCard
-              id={recipeOfTheDay?.idMeal || ''}
-              name={recipeOfTheDay?.strMeal || ''}
-              image={recipeOfTheDay?.strMealThumb || ''}
-              category={recipeOfTheDay?.strCategory}
-              cuisine={recipeOfTheDay?.strArea}
-              ingredients={numIngredients}
-              tags={tags}
-            />
-          )}
+    <div className="main-page main-page--home">
+      <header className="home-hero" id="home-hero">
+        <div className="home-hero__overlay" aria-hidden="true" />
+        <div className="home-hero__content">
+          <h1>Recipe Explorer</h1>
+          <h2>Discover delicious recipes from around the world</h2>
+          <button className="home-hero__button" onClick={scrollToRecipeOfDay}>
+            Explore Recipes
+            <ArrowRight size={18} weight="bold" className="button-icon home-hero__button-icon" />
+          </button>
         </div>
-      </section>
+      </header>
 
-      {/* Cuisines Sections */}
-      <h1 className="cuisines-title">
-        Cuisines
-      </h1>
-      <div className="cuisines-container">
-        {CUISINES.map((cuisine) => (
-          <CuisineSection key={cuisine} cuisine={cuisine} />
-        ))}
-      </div>
-
-      {/* Food Categories Section */}
-      <section className="categories-section">
-        <h2 className="categories-section-title">Food Categories</h2>
-        <div className="categories-marquee" role="region" aria-label="Scrolling food categories">
-          <div className="categories-track">
-            {marqueeCategories.map((category, index) => (
-              <div className="categories-track-item" key={`${category.name}-${index}`}>
-                <CategoryCard
-                  name={category.name}
-                  image={category.image}
-                />
-              </div>
-            ))}
+      <div className="home-content">
+        <section className="recipe-of-day" ref={recipeOfDayRef}>
+          <h2 className="recipe-of-day-title">
+            <Heart size={28} weight="bold" className="section-heading-icon" />
+            Recipe of the Day
+          </h2>
+          <div className="recipe-of-day-container">
+            {!randomMeal ? (
+              <div>Loading recipe of the day...</div>
+            ) : (
+              <FeaturedRecipeCard
+                id={recipeOfTheDay?.idMeal || ''}
+                name={recipeOfTheDay?.strMeal || ''}
+                image={recipeOfTheDay?.strMealThumb || ''}
+                category={recipeOfTheDay?.strCategory}
+                cuisine={recipeOfTheDay?.strArea}
+                ingredients={numIngredients}
+                tags={tags}
+              />
+            )}
           </div>
+        </section>
+
+        <h1 className="cuisines-title">Cuisines</h1>
+        <div className="cuisines-container">
+          {CUISINES.map((cuisine) => (
+            <CuisineSection key={cuisine} cuisine={cuisine} />
+          ))}
         </div>
-      </section>
+
+        <section className="categories-section">
+          <h2 className="categories-section-title">Food Categories</h2>
+          <div className="categories-marquee" role="region" aria-label="Scrolling food categories">
+            <div className="categories-track">
+              {marqueeCategories.map((category, index) => (
+                <div className="categories-track-item" key={`${category.name}-${index}`}>
+                  <CategoryCard name={category.name} image={category.image} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

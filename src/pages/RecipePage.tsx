@@ -1,45 +1,34 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import React, { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   useGetSeafoodMealsQuery,
-  useGetCategoriesQuery,
-  useGetCuisinesQuery,
   useGetMealsByCategoryQuery,
   useGetMealsByCuisineQuery,
   useSearchMealByNameQuery,
 } from '../redux/mealApi';
 import RecipeCard from '../components/RecipeCard';
-import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
 import '../styles/MainPages.css';
 
 const RecipePage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedCuisine, setSelectedCuisine] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
-  // Read query params on mount and when they change
-  useEffect(() => {
-    const categoryParam = searchParams.get('category');
-    const cuisineParam = searchParams.get('cuisine');
-    
-    if (categoryParam) {
-      setSelectedCategory(categoryParam);
-      setSelectedCuisine('All');
-    } else if (cuisineParam) {
-      setSelectedCuisine(cuisineParam);
-      setSelectedCategory('All');
-    }
-  }, [searchParams]);
+  const selectedCategory = searchParams.get('category') ?? 'All';
+  const selectedCuisine = searchParams.get('cuisine') ?? 'All';
+  const introSubtitle =
+    selectedCuisine !== 'All' && selectedCategory !== 'All'
+      ? `Showing ${selectedCuisine} cuisine recipes in the ${selectedCategory} category.`
+      : selectedCuisine !== 'All'
+      ? `Showing ${selectedCuisine} cuisine recipes.`
+      : selectedCategory !== 'All'
+        ? `Showing recipes in the ${selectedCategory} category.`
+        : 'Browse all recipes by category or cuisine.';
 
   const { data: seafoodData, isLoading: isLoadingSeafood, error: seafoodError } = useGetSeafoodMealsQuery();
-  const { data: categoriesData } = useGetCategoriesQuery();
-  const { data: cuisinesData } = useGetCuisinesQuery();
   const { data: categoryMealsData, isLoading: isLoadingCategoryMeals } = useGetMealsByCategoryQuery(selectedCategory, {
     skip: selectedCategory === 'All' || Boolean(searchQuery),
   });
@@ -56,16 +45,16 @@ const RecipePage: React.FC = () => {
   const meals = useMemo(() => {
     if (searchQuery && searchData?.meals) {
       return searchData.meals.filter((meal) => {
-        if (selectedCuisine !== 'All') {
-          return 'strArea' in meal && meal.strArea === selectedCuisine;
-        }
-
-        if (selectedCategory !== 'All') {
-          return 'strCategory' in meal && meal.strCategory === selectedCategory;
-        }
-
-        return true;
+        const matchesCuisine = selectedCuisine === 'All' || ('strArea' in meal && meal.strArea === selectedCuisine);
+        const matchesCategory = selectedCategory === 'All' || ('strCategory' in meal && meal.strCategory === selectedCategory);
+        return matchesCuisine && matchesCategory;
       });
+    }
+
+    if (selectedCuisine !== 'All' && selectedCategory !== 'All') {
+      const categoryMeals = categoryMealsData?.meals ?? [];
+      const cuisineMealIds = new Set((cuisineMealsData?.meals ?? []).map((meal) => meal.idMeal));
+      return categoryMeals.filter((meal) => cuisineMealIds.has(meal.idMeal));
     }
 
     if (selectedCuisine !== 'All') {
@@ -80,6 +69,10 @@ const RecipePage: React.FC = () => {
   }, [searchQuery, searchData, seafoodData, selectedCategory, categoryMealsData, selectedCuisine, cuisineMealsData]);
 
   const getMealCategory = (meal: unknown) => {
+    if (selectedCategory !== 'All') {
+      return selectedCategory;
+    }
+
     if (meal && typeof meal === 'object') {
       const maybeMeal = meal as { strCategory?: unknown; strArea?: unknown };
       const category = typeof maybeMeal.strCategory === 'string' ? maybeMeal.strCategory : '';
@@ -106,22 +99,8 @@ const RecipePage: React.FC = () => {
       }
     }
 
-    if (selectedCategory !== 'All') {
-      return selectedCategory;
-    }
-
     return 'Seafood';
   };
-
-  const categoryOptions = useMemo(() => {
-    const apiCategories = categoriesData?.meals?.map((item) => item.strCategory).filter(Boolean) || [];
-    return ['All', ...apiCategories];
-  }, [categoriesData]);
-
-  const cuisineOptions = useMemo(() => {
-    const apiCuisines = cuisinesData?.meals?.map((item) => item.strArea).filter(Boolean) || [];
-    return ['All', ...apiCuisines];
-  }, [cuisinesData]);
 
   const filteredMeals = useMemo(() => {
     return meals;
@@ -137,42 +116,9 @@ const RecipePage: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setSelectedCategory(value);
-    setSelectedCuisine('All');
-    setCurrentPage(1);
-    if (value !== 'All') {
-      setSearchParams({ category: value });
-    } else {
-      setSearchParams({});
-    }
-  };
-
-  const handleCuisineChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setSelectedCuisine(value);
-    setSelectedCategory('All');
-    setCurrentPage(1);
-    if (value !== 'All') {
-      setSearchParams({ cuisine: value });
-    } else {
-      setSearchParams({});
-    }
-  };
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo(0, 0);
-  };
-
-  const handleReturnToHome = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-      return;
-    }
-
-    navigate('/');
   };
 
   if (error) {
@@ -181,18 +127,10 @@ const RecipePage: React.FC = () => {
 
   return (
     <div className="main-page">
-      <Header
-        categoryOptions={categoryOptions}
-        onPrimaryAction={handleReturnToHome}
-        primaryActionLabel="Back"
-        onCategoryChange={handleCategoryChange}
-        categoryValue={selectedCategory}
-        cuisineOptions={cuisineOptions}
-        onCuisineChange={handleCuisineChange}
-        cuisineValue={selectedCuisine}
-        appSubtitle="Fresh meals every day"
-        showHero={false}
-      />
+      <header className="page-header page-header-gif">
+        <h1>Recipe Page</h1>
+        <h2>{introSubtitle}</h2>
+      </header>
 
       <SearchBar onSearch={handleSearch} placeholder="Search recipes by name..." />
 

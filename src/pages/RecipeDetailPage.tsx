@@ -100,6 +100,11 @@ const RecipeDetailPage: React.FC = () => {
 
   return (
     <div className="recipe-detail-page">
+      <header className="page-header page-header-gif">
+        <h1>Recipe Detail</h1>
+        <h2>View ingredients, follow step-by-step instructions, and cook this recipe with confidence.</h2>
+      </header>
+
       <button onClick={() => navigate('/')} className="back-button">
         <ArrowLeft size={18} weight="bold" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
         Back to Recipes

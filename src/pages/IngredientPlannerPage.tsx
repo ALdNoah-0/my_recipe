@@ -1,5 +1,4 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   useGetIngredientsQuery,
   useLazyGetMealsByIngredientQuery,
@@ -54,7 +53,6 @@ const DEFAULT_SUGGESTED_INGREDIENTS = [
 ];
 
 const IngredientPlannerPage: React.FC = () => {
-  const navigate = useNavigate();
   const [ingredientSearch, setIngredientSearch] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
   const [rankedMeals, setRankedMeals] = useState<RankedMeal[]>([]);
@@ -195,30 +193,9 @@ const IngredientPlannerPage: React.FC = () => {
 
   return (
     <div className="ingredient-planner-page">
-      <div className="recipe-app-header">
-        <div className="app-brand">
-          <div className="app-logo" aria-hidden="true">
-            R
-          </div>
-          <div className="app-brand-text">
-            <span className="app-title">Recipe App</span>
-            <span className="app-subtitle">Cook smarter with what you have</span>
-          </div>
-        </div>
-
-        <div className="planner-header-actions">
-          <button className="planner-nav-button" onClick={() => navigate('/')}>
-            Home
-          </button>
-          <button className="planner-nav-button planner-nav-button-muted" onClick={() => navigate('/recipe')}>
-            Browse Recipes
-          </button>
-        </div>
-      </div>
-
-      <header className="planner-hero">
+      <header className="page-header page-header-gif">
         <h1>Ingredient Planner</h1>
-        <p>Check what is available in your kitchen and get recipes ranked by ingredient match.</p>
+        <h2>Check what is in your kitchen and get recipe matches based on your selected ingredients.</h2>
       </header>
 
       <section className="planner-layout">

@@ -4,6 +4,116 @@
   padding: var(--space-2xl) var(--space-lg);
 }
 
+.main-page--home {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.home-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(7rem, 12vw, 10rem) clamp(1.25rem, 4vw, 3.5rem) clamp(3rem, 6vw, 5rem);
+  background-image: linear-gradient(180deg, rgba(10, 18, 17, 0.08) 0%, rgba(10, 18, 17, 0.24) 58%, rgba(10, 18, 17, 0.68) 100%), url('../assets/header-bg.gif');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.home-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.14), transparent 24%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.48));
+}
+
+.home-hero__content {
+  position: relative;
+  z-index: 1;
+  width: min(42rem, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+  color: #ffffff;
+}
+
+.home-hero__content h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height: 0.95;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.42);
+}
+
+.home-hero__content h2 {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 30rem;
+  font-size: clamp(1.15rem, 2vw, 1.65rem);
+  font-weight: 500;
+  line-height: 1.35;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.32);
+}
+
+.home-hero__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.6rem;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.95rem 1.45rem;
+  background: linear-gradient(135deg, #3db46d 0%, #1f8f53 100%);
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-weight: 700;
+  box-shadow: 0 16px 26px rgba(24, 108, 63, 0.28);
+  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+}
+
+.home-hero__button:hover,
+.home-hero__button:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 30px rgba(24, 108, 63, 0.34);
+  filter: brightness(1.03);
+}
+
+.button-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.section-heading-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.home-content {
+  width: min(1200px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: clamp(2rem, 4vw, 3.5rem) 0 4rem;
+}
+
+.home-content .cuisines-title,
+.home-content .recipe-of-day,
+.home-content .categories-section {
+  width: 100%;
+}
+
+.home-content .cuisines-container {
+  margin-bottom: 0;
+}
+
+.home-content .categories-section {
+  margin-top: var(--space-3xl);
+}
+
 .recipe-app-header {
   display: flex;
   align-items: center;
@@ -162,6 +272,9 @@
   color: var(--text-primary);
   text-align: left;
   margin-bottom: var(--space-xl);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
 }
 
 /* Cuisines Section Styles */
