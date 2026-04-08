@@ -6,13 +6,19 @@
 
 .main-page--home {
   max-width: none;
-  margin: 0;
+  width: 100vw;
+  width: 100dvw;
+  margin-left: calc(50% - 50vw);
+  margin-left: calc(50% - 50dvw);
+  margin-right: 0;
+  overflow-x: clip;
   padding: 0;
 }
 
 .home-hero {
   position: relative;
-  min-height: 100vh;
+  height: 100dvh;
+  width: 100dvw;
   display: flex;
   align-items: flex-end;
   padding: clamp(7rem, 12vw, 10rem) clamp(1.25rem, 4vw, 3.5rem) clamp(3rem, 6vw, 5rem);

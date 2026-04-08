@@ -162,7 +162,7 @@ const HomePage: React.FC = () => {
   const tags = recipeOfTheDay?.strTags ? recipeOfTheDay.strTags.split(',') : [];
 
   return (
-    <div className="main-page main-page--home">
+    <div className="main-page--home">
       <header className="home-hero" id="home-hero">
         <div className="home-hero__overlay" aria-hidden="true" />
         <div className="home-hero__content">
