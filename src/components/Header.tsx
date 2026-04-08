@@ -9,6 +9,7 @@ const Header: React.FC = () => {
   const headerRef = useRef<HTMLElement>(null);
   const [isNavExpanded, setIsNavExpanded] = useState(false);
   const [openMenu, setOpenMenu] = useState<'categories' | 'cuisines' | null>(null);
+  const [isInHeroSection, setIsInHeroSection] = useState(false);
 
   const { data: categoriesData } = useGetCategoriesQuery();
   const { data: cuisinesData } = useGetCuisinesQuery();
@@ -28,6 +29,37 @@ const Header: React.FC = () => {
 
   const isHomeRoute = location.pathname === '/';
   const headerSubtitle = 'Browse categories, cuisines, and meal ideas';
+
+  useEffect(() => {
+    if (!isHomeRoute) {
+      setIsInHeroSection(false);
+      return;
+    }
+
+    const heroElement = document.getElementById('home-hero');
+    if (!heroElement) {
+      setIsInHeroSection(false);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsInHeroSection(entry.isIntersecting);
+        });
+      },
+      {
+        threshold: 0,
+        rootMargin: '0px 0px 0px 0px',
+      }
+    );
+
+    observer.observe(heroElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isHomeRoute]);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
@@ -77,7 +109,9 @@ const Header: React.FC = () => {
   return (
     <header
       ref={headerRef}
-      className="recipe-navbar recipe-navbar--transparent navbar navbar-expand-lg navbar-dark"
+      className={`recipe-navbar navbar navbar-expand-lg navbar-dark ${
+        isHomeRoute && isInHeroSection ? 'recipe-navbar--transparent' : 'recipe-navbar--solid'
+      } ${isHomeRoute && isInHeroSection ? 'recipe-navbar--home-hero' : ''}`}
     >
       <div className="container-fluid recipe-navbar__inner">
         <button type="button" className="navbar-brand recipe-brand" onClick={() => navigateTo('/')}>

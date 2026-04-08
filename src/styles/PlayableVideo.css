@@ -1,0 +1,47 @@
+.playable-video-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto var(--space-2xl);
+  padding: 0 var(--space-lg);
+}
+
+.playable-video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  border-radius: 20px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e7dcc7;
+}
+
+.playable-video-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .playable-video-container {
+    padding: 0 var(--space-md);
+    margin-bottom: var(--space-xl);
+  }
+
+  .playable-video-wrapper {
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .playable-video-container {
+    padding: 0;
+  }
+
+  .playable-video-wrapper {
+    border-radius: 12px;
+  }
+}

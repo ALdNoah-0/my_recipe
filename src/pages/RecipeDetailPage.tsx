@@ -1,15 +1,33 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import { useGetMealDetailsQuery } from '../redux/mealApi';
+import PlayableVideo from '../components/PlayableVideo';
 import '../styles/RecipeDetailPage.css';
 
 const RecipeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data, isLoading, error } = useGetMealDetailsQuery(id || '');
+  const videoRef = useRef<HTMLDivElement>(null);
 
   const meal = data?.meals?.[0];
+
+  const handleWatchVideo = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (videoRef.current) {
+      videoRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        const iframe = videoRef.current?.querySelector('iframe');
+        if (iframe && iframe.contentWindow) {
+          iframe.contentWindow.postMessage(
+            '{"event":"command","func":"playVideo","args":""}',
+            '*'
+          );
+        }
+      }, 800);
+    }
+  };
 
   const getIngredients = () => {
     if (!meal) return [];
@@ -152,7 +170,7 @@ const RecipeDetailPage: React.FC = () => {
               Start Cooking
             </a>
             {meal.strYoutube && (
-              <a href={meal.strYoutube} target="_blank" rel="noopener noreferrer" className="video-link">
+              <a href="#video" onClick={handleWatchVideo} className="video-link">
                 Watch Video
                 <ArrowRight size={18} weight="bold" style={{ marginLeft: '6px', verticalAlign: 'text-bottom' }} />
               </a>
@@ -167,6 +185,10 @@ const RecipeDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {meal.strYoutube && (
+        <PlayableVideo ref={videoRef} youtubeUrl={meal.strYoutube} title={`${meal.strMeal} Recipe Video`} />
+      )}
 
       <div className="recipe-detail-content-grid">
         <div className="recipe-section">
