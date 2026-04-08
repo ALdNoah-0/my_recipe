@@ -170,9 +170,9 @@ label {
 }
 
 .back-button:hover {
-  background-color: var(--bg-hover);
-  border-color: var(--border-base);
-  color: var(--text-primary);
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
 }
 
 .back-button:active {

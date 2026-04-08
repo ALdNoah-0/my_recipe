@@ -33,13 +33,13 @@ const FeaturedRecipeCard: React.FC<FeaturedRecipeCardProps> = ({
         <div className="recipe-meta">
           {category && (
             <div className="meta-item">
-              <strong>Category</strong>
+              <strong>Category:</strong>{' '}
               <span className="meta-value">{category}</span>
             </div>
           )}
           {cuisine && (
             <div className="meta-item">
-              <strong>Cuisine</strong>
+              <strong>Cuisine:</strong>{' '}
               <span className="meta-value">{cuisine}</span>
             </div>
           )}

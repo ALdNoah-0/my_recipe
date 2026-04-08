@@ -9,6 +9,7 @@ import {
   useSearchMealByNameQuery,
 } from '../redux/mealApi';
 import RecipeCard from '../components/RecipeCard';
+import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
 import '../styles/MainPages.css';
@@ -54,7 +55,17 @@ const RecipePage: React.FC = () => {
 
   const meals = useMemo(() => {
     if (searchQuery && searchData?.meals) {
-      return searchData.meals;
+      return searchData.meals.filter((meal) => {
+        if (selectedCuisine !== 'All') {
+          return 'strArea' in meal && meal.strArea === selectedCuisine;
+        }
+
+        if (selectedCategory !== 'All') {
+          return 'strCategory' in meal && meal.strCategory === selectedCategory;
+        }
+
+        return true;
+      });
     }
 
     if (selectedCuisine !== 'All') {
@@ -69,18 +80,36 @@ const RecipePage: React.FC = () => {
   }, [searchQuery, searchData, seafoodData, selectedCategory, categoryMealsData, selectedCuisine, cuisineMealsData]);
 
   const getMealCategory = (meal: unknown) => {
-    if (selectedCuisine !== 'All') {
-      return selectedCuisine;
-    }
-    if (meal && typeof meal === 'object' && 'strCategory' in meal) {
-      const category = (meal as { strCategory?: unknown }).strCategory;
-      if (typeof category === 'string' && category.trim()) {
+    if (meal && typeof meal === 'object') {
+      const maybeMeal = meal as { strCategory?: unknown; strArea?: unknown };
+      const category = typeof maybeMeal.strCategory === 'string' ? maybeMeal.strCategory : '';
+      const area = typeof maybeMeal.strArea === 'string' ? maybeMeal.strArea : '';
+
+      if (searchQuery) {
+        if (selectedCuisine !== 'All' && area.trim()) {
+          return area;
+        }
+        if (selectedCategory !== 'All' && category.trim()) {
+          return category;
+        }
+        if (category.trim()) {
+          return category;
+        }
+      }
+
+      if (selectedCuisine !== 'All') {
+        return selectedCuisine;
+      }
+
+      if (category.trim()) {
         return category;
       }
     }
+
     if (selectedCategory !== 'All') {
       return selectedCategory;
     }
+
     return 'Seafood';
   };
 
@@ -152,62 +181,18 @@ const RecipePage: React.FC = () => {
 
   return (
     <div className="main-page">
-      <div className="recipe-app-header">
-        <div className="app-brand">
-          <div className="app-logo" aria-hidden="true">
-            R
-          </div>
-          <div className="app-brand-text">
-            <span className="app-title">Recipe App</span>
-            <span className="app-subtitle">Fresh meals every day</span>
-          </div>
-        </div>
-
-        <div className="header-filters">
-          <label className="header-category">
-            <button className="header-category-select planner-nav-button" aria-label="Back" onClick={handleReturnToHome}>
-              Back
-            </button>
-          </label>
-
-          <label className="header-category">
-            <span className="header-category-label">Category</span>
-            <select
-              className="header-category-select"
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-              aria-label="Recipe category"
-            >
-              {categoryOptions.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="header-category">
-            <span className="header-category-label">Cuisine</span>
-            <select
-              className="header-category-select"
-              value={selectedCuisine}
-              onChange={handleCuisineChange}
-              aria-label="Recipe cuisine"
-            >
-              {cuisineOptions.map((cuisine) => (
-                <option key={cuisine} value={cuisine}>
-                  {cuisine}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-      </div>
-
-      <header className="page-header">
-        <h1>Recipe Explorer</h1>
-        <p>Discover delicious recipes</p>
-      </header>
+      <Header
+        categoryOptions={categoryOptions}
+        onPrimaryAction={handleReturnToHome}
+        primaryActionLabel="Back"
+        onCategoryChange={handleCategoryChange}
+        categoryValue={selectedCategory}
+        cuisineOptions={cuisineOptions}
+        onCuisineChange={handleCuisineChange}
+        cuisineValue={selectedCuisine}
+        appSubtitle="Fresh meals every day"
+        showHero={false}
+      />
 
       <SearchBar onSearch={handleSearch} placeholder="Search recipes by name..." />
 

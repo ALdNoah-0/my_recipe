@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeftIcon, ArrowRightIcon } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import { useGetMealDetailsQuery } from '../redux/mealApi';
 import '../styles/RecipeDetailPage.css';
 
@@ -37,7 +37,7 @@ const RecipeDetailPage: React.FC = () => {
         <div className="error-message">
           <p>Recipe not found. Please go back and try again.</p>
           <button onClick={() => navigate('/')} className="back-button">
-            <ArrowLeftIcon size={18} weight="bold" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+            <ArrowLeft size={18} weight="bold" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
             Back to Recipes
           </button>
         </div>
@@ -50,6 +50,12 @@ const RecipeDetailPage: React.FC = () => {
     .split(',')
     .map((tag) => tag.trim())
     .filter(Boolean);
+
+  const teaserText = (meal.strInstructions || '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(/[.!?]/)[0];
 
   // Clean and parse instructions into steps
   const parseInstructions = (text: string) => {
@@ -95,73 +101,91 @@ const RecipeDetailPage: React.FC = () => {
   return (
     <div className="recipe-detail-page">
       <button onClick={() => navigate('/')} className="back-button">
-        <ArrowLeftIcon size={18} weight="bold" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+        <ArrowLeft size={18} weight="bold" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
         Back to Recipes
       </button>
 
-      <div className="recipe-detail-container">
-        <div className="recipe-detail-image">
-          <img src={meal.strMealThumb} alt={meal.strMeal} />
-        </div>
-
-        <div className="recipe-detail-info">
+      <div className="recipe-showcase">
+        <div className="recipe-showcase-copy">
+          <span className="recipe-showcase-badge">Featured Dish</span>
           <h1>{meal.strMeal}</h1>
-          <p className="recipe-subtitle">{ingredients.length} ingredients</p>
+          <p className="recipe-showcase-teaser">
+            {teaserText || 'A crave-worthy recipe ready for your next kitchen win.'}
+          </p>
 
-          <div className="recipe-meta">
-            {meal.strCategory && (
-              <div className="meta-item">
-                <strong>Category</strong>
-                <span className="meta-value">{meal.strCategory}</span>
-              </div>
-            )}
+          <div className="recipe-showcase-stats">
+            <div className="showcase-stat-card">
+              <span className="showcase-stat-label">Ingredients</span>
+              <strong>{ingredients.length}</strong>
+            </div>
             {meal.strArea && (
-              <div className="meta-item">
-                <strong>Cuisine</strong>
-                <span className="meta-value">{meal.strArea}</span>
+              <div className="showcase-stat-card">
+                <span className="showcase-stat-label">Cuisine</span>
+                <strong>{meal.strArea}</strong>
               </div>
             )}
-            {tags.length > 0 && (
-              <div className="meta-item">
-                <strong>Tags</strong>
-                <span className="meta-value">{tags.join(', ')}</span>
+            {meal.strCategory && (
+              <div className="showcase-stat-card">
+                <span className="showcase-stat-label">Category</span>
+                <strong>{meal.strCategory}</strong>
               </div>
             )}
           </div>
 
-          <div className="recipe-section">
-            <h2>Ingredients</h2>
-            <ul className="ingredients-list">
-              {ingredients.map((item, index) => (
-                <li key={index}>
-                  <span className="ingredient-name">{item.ingredient}</span>
-                  <span className="ingredient-measure">{item.measure}</span>
-                </li>
+          {tags.length > 0 && (
+            <div className="recipe-showcase-tags" aria-label="Recipe tags">
+              {tags.slice(0, 4).map((tag) => (
+                <span key={tag} className="recipe-showcase-tag">
+                  {tag}
+                </span>
               ))}
-            </ul>
-          </div>
-
-          <div className="recipe-section">
-            <h2>Instructions</h2>
-            <ol className="instructions-list">
-              {parseInstructions(meal.strInstructions).map((step, index) => (
-                <li key={index} className="instruction-step">
-                  <span className="step-number">Step {index + 1}</span>
-                  <span className="step-content">{step}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          {meal.strYoutube && (
-            <div className="recipe-section">
-              <h2>Video Tutorial</h2>
-              <a href={meal.strYoutube} target="_blank" rel="noopener noreferrer" className="video-link">
-                Watch on YouTube
-                <ArrowRightIcon size={18} weight="bold" style={{ marginLeft: '6px', verticalAlign: 'text-bottom' }} />
-              </a>
             </div>
           )}
+
+          <div className="recipe-showcase-actions">
+            <a href="#recipe-instructions" className="primary-cta">
+              Start Cooking
+            </a>
+            {meal.strYoutube && (
+              <a href={meal.strYoutube} target="_blank" rel="noopener noreferrer" className="video-link">
+                Watch Video
+                <ArrowRight size={18} weight="bold" style={{ marginLeft: '6px', verticalAlign: 'text-bottom' }} />
+              </a>
+            )}
+          </div>
+        </div>
+
+        <div className="recipe-showcase-visual" aria-hidden="true">
+          <div className="recipe-image-stage">
+            <img src={meal.strMealThumb} alt={meal.strMeal} />
+            <div className="recipe-image-shadow" />
+          </div>
+        </div>
+      </div>
+
+      <div className="recipe-detail-content-grid">
+        <div className="recipe-section">
+          <h2>Ingredients</h2>
+          <ul className="ingredients-list">
+            {ingredients.map((item, index) => (
+              <li key={index}>
+                <span className="ingredient-name">{item.ingredient}</span>
+                <span className="ingredient-measure">{item.measure}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="recipe-section" id="recipe-instructions">
+          <h2>Instructions</h2>
+          <ol className="instructions-list">
+            {parseInstructions(meal.strInstructions).map((step, index) => (
+              <li key={index} className="instruction-step">
+                <span className="step-number">Step {index + 1}</span>
+                <span className="step-content">{step}</span>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </div>

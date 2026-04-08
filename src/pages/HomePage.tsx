@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HeartIcon, ArrowRightIcon, ArrowLeftIcon } from '@phosphor-icons/react';
+import { Heart, ArrowRight, ArrowLeft } from '@phosphor-icons/react';
 import { useGetMealsByCuisineQuery, useGetCategoriesQuery, useGetRandomMealQuery } from '../redux/mealApi';
 import RecipeCard from '../components/RecipeCard';
+import Header from '../components/Header';
 import CategoryCard from '../components/CategoryCard';
 import FeaturedRecipeCard from '../components/FeaturedRecipeCard';
 import '../styles/MainPages.css';
@@ -69,7 +70,7 @@ const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
       <div className="cuisine-section-header">
         <h2 className="cuisine-section-title">{cuisine} Cuisine</h2>
         <button className="view-all-button" onClick={handleViewAll}>
-          View All <ArrowRightIcon size={18} weight="bold" style={{ display: 'inline', marginLeft: '6px', verticalAlign: 'text-bottom' }} />
+          View All <ArrowRight size={18} weight="bold" style={{ display: 'inline', marginLeft: '6px', verticalAlign: 'text-bottom' }} />
         </button>
       </div>
       <div className="cuisine-scroll-wrapper">
@@ -79,7 +80,7 @@ const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
             onClick={() => scroll('left')}
             aria-label="Scroll left"
           >
-            <ArrowLeftIcon size={20} weight="bold" />
+            <ArrowLeft size={20} weight="bold" />
           </button>
         )}
         <div className="cuisine-recipes-scroll" ref={scrollContainerRef}>
@@ -105,7 +106,7 @@ const CuisineSection: React.FC<CuisineSectionProps> = ({ cuisine }) => {
             onClick={() => scroll('right')}
             aria-label="Scroll right"
           >
-            <ArrowRightIcon size={20} weight="bold" />
+            <ArrowRight size={20} weight="bold" />
           </button>
         )}
       </div>
@@ -165,49 +166,17 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="main-page">
-      <div className="recipe-app-header">
-        <div className="app-brand">
-          <div className="app-logo" aria-hidden="true">
-            R
-          </div>
-          <div className="app-brand-text">
-            <span className="app-title">Recipe App</span>
-            <span className="app-subtitle">Learn to cook in our kitchen!</span>
-          </div>
-        </div>
-
-        <div className="header-filters">
-          <button className="header-nav-button" onClick={handleGoToIngredientPlanner}>
-            Ingredient Planner
-          </button>
-
-          <label className="header-category">
-            <span className="header-category-label">Category</span>
-            <select
-              className="header-category-select"
-              defaultValue="All"
-              onChange={handleCategoryChange}
-              aria-label="Recipe category"
-            >
-              {categoryOptions.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-      </div>
-
-      <header className="page-header">
-        <h1>Recipe Explorer</h1>
-        <p>Discover delicious recipes from around the world</p>
-      </header>
+      <Header
+        categoryOptions={categoryOptions}
+        onPrimaryAction={handleGoToIngredientPlanner}
+        primaryActionLabel="Ingredient Planner"
+        onCategoryChange={handleCategoryChange}
+      />
       
       {/* Recipe of the Day */}
       <section className="recipe-of-day">
         <h2 className="recipe-of-day-title">
-          <HeartIcon size={28} weight="bold" style={{ display: 'inline', marginRight: '8px', verticalAlign: 'text-bottom' }} />
+          <Heart size={28} weight="bold" style={{ display: 'inline', marginRight: '8px', verticalAlign: 'text-bottom' }} />
           Recipe of the Day
         </h2>
         <div className="recipe-of-day-container">
