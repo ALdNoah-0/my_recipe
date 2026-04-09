@@ -266,6 +266,26 @@
   color: #403b31;
 }
 
+.like-button {
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 12px;
+  transition: all 0.2s;
+}
+
+.like-button:hover {
+  transform: scale(1.05);
+}
+
+.like-button.liked {
+  border-color: #ff4d4f;
+  color: #ff4d4f;
+}
+
 @media (max-width: 1024px) {
   .recipe-showcase,
   .recipe-detail-content-grid {

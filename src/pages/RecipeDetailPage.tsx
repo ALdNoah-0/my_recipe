@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import { useGetMealDetailsQuery } from '../redux/mealApi';
@@ -11,8 +11,34 @@ const RecipeDetailPage: React.FC = () => {
   const { data, isLoading, error } = useGetMealDetailsQuery(id || '');
   const videoRef = useRef<HTMLDivElement>(null);
 
+  const [liked, setLiked] = useState(false);
+  
   const meal = data?.meals?.[0];
 
+  // Load liked state from localStorage
+  useEffect(() => {
+    if (meal) {
+      const likedRecipes = JSON.parse(localStorage.getItem('likedRecipes') || '[]');
+      setLiked(likedRecipes.includes(meal.idMeal));
+    }
+  }, [meal]);
+
+  // Toggle like
+  const toggleLike = () => {
+    if (!meal) return;
+    const likedRecipes: string[] = JSON.parse(localStorage.getItem('likedRecipes') || '[]');
+    if (liked) {
+      const updated = likedRecipes.filter((recipeId) => recipeId !== meal.idMeal);
+      localStorage.setItem('likedRecipes', JSON.stringify(updated));
+      setLiked(false);
+    } else {
+      likedRecipes.push(meal.idMeal);
+      localStorage.setItem('likedRecipes', JSON.stringify(likedRecipes));
+      setLiked(true);
+    }
+  };
+
+  
   const handleWatchVideo = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     if (videoRef.current) {
@@ -199,6 +225,10 @@ const RecipeDetailPage: React.FC = () => {
               </a>
             )}
           </div>
+          
+          <button onClick={toggleLike} className={`like-button ${liked ? 'liked' : ''}`}>
+              {liked ? '❤️ Liked' : '🤍 Like'}
+          </button>
         </div>
 
         <div className="recipe-showcase-visual" aria-hidden="true">

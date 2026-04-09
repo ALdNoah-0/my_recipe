@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import RecipePage from './pages/RecipePage';
 import RecipeDetailPage from './pages/RecipeDetailPage';
 import IngredientPlannerPage from './pages/IngredientPlannerPage';
+import LikedRecipes from './pages/LikedRecipes';
 import './styles/global.css';
 import './App.css';
 
@@ -25,6 +26,7 @@ function AppShell() {
           <Route path="/recipe" element={<RecipePage />} />
           <Route path="/recipe/:id" element={<RecipeDetailPage />} />
           <Route path="/ingredient-planner" element={<IngredientPlannerPage />} />
+          <Route path="/favourites" element={<LikedRecipes />} />
         </Routes>
       </main>
     </>

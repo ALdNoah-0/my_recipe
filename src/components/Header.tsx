@@ -141,6 +141,12 @@ const Header: React.FC = () => {
               </button>
             </li>
 
+            <li className="nav-item">
+              <button type="button" className="nav-link recipe-nav-link" onClick={() => navigateTo('/favourites')}>
+                Favourites
+              </button>
+            </li>
+
             <li className={`nav-item dropdown recipe-dropdown ${openMenu === 'categories' ? 'show' : ''}`}>
               <button
                 type="button"
