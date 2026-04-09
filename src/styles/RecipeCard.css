@@ -10,6 +10,7 @@
   height: 100%;
   box-shadow: 0 0px 10px rgba(25, 24, 20, 0.25);
   position: relative;
+  min-height: 400px;
 }
 
 .recipe-card:hover {
@@ -40,13 +41,17 @@
   margin-bottom: var(--space-md);
   line-height: 1.3;
   min-height: auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 41px;
 }
 
 .recipe-card-meta {
   display: flex;
   gap: var(--space-lg);
   margin-bottom: var(--space-md);
-  flex-grow: 1;
   align-items: flex-start;
 }
 
