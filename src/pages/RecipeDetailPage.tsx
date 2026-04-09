@@ -69,11 +69,34 @@ const RecipeDetailPage: React.FC = () => {
     .map((tag) => tag.trim())
     .filter(Boolean);
 
-  const teaserText = (meal.strInstructions || '')
-    .replace(/<[^>]*>/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .split(/[.!?]/)[0];
+  const getDishDescription = () => {
+    const name = meal.strMeal || 'This dish';
+    const topTags = tags.slice(0, 2).map((tag) => tag.toLowerCase());
+    const highlightedIngredients = ingredients
+      .map((item) => item.ingredient.trim())
+      .filter(Boolean)
+      .slice(0, 3);
+
+    if (highlightedIngredients.length === 3) {
+      return `${name} layers ${highlightedIngredients[0]}, ${highlightedIngredients[1]}, and ${highlightedIngredients[2]} into a rich, comforting dish with a homemade feel.`;
+    }
+
+    if (highlightedIngredients.length === 2) {
+      return `${name} pairs ${highlightedIngredients[0]} with ${highlightedIngredients[1]} for a bold, satisfying bite that feels special any night of the week.`;
+    }
+
+    if (topTags.length === 2) {
+      return `${name} delivers ${topTags[0]} and ${topTags[1]} character in every forkful, with a finish that keeps you coming back.`;
+    }
+
+    if (topTags.length === 1) {
+      return `${name} brings a ${topTags[0]} touch with warm, balanced flavors that are easy to love.`;
+    }
+
+    return `${name} is a crave-worthy plate with layered flavor and a cozy, restaurant-style finish.`;
+  };
+
+  const teaserText = getDishDescription();
 
   // Clean and parse instructions into steps
   const parseInstructions = (text: string) => {
